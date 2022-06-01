@@ -4,15 +4,15 @@
 version=5.3
 
 # Read filename
-while echo "Enter the jmx filename that is inside the /jmx directory (eg: examplefilename)"; do
+while echo "Enter the jmx filename that is inside the /data/jmx directory (eg: examplefilename)"; do
 
     # echo "You can use one of the following files.."
-    # for FILE in ../jmx/*; do
+    # for FILE in ../data/jmx/*; do
     #     echo $FILE
     # done
     read jmx_file_name
     scriptname=$jmx_file_name
-    FILE=../jmx/$jmx_file_name.jmx
+    FILE=../data/jmx/$jmx_file_name.jmx
 
     if test -f "$FILE"; then
         echo "$FILE exists."
@@ -29,6 +29,6 @@ echo "Jmx file= $jmx_file_name.jmx"
 DN="$(date)"
 DATE_NOW=${DN// /_}
 
-JVM_ARGS="-Xms512m -Xmx2048m" jmeter -n -X -Jclient.rmi.localport=7000 -Jserver.rmi.ssl.disable=true -R slave-1,slave-2 -Jjmeter.save.saveservice.subresults=false -t /jmx/${scriptname}.jmx -f -l /results/output/$DATE_NOW/${scriptname}.jtl -e -o /results/output/$DATE_NOW/dashboard -j /results/output/$DATE_NOW/jmeter.log 2>&1
+JVM_ARGS="-Xms512m -Xmx2048m" jmeter -n -X -Jclient.rmi.localport=7000 -Jserver.rmi.ssl.disable=true -R slave-1,slave-2 -Jjmeter.save.saveservice.subresults=false -t /data/jmx/${scriptname}.jmx -f -l /results/output/$DATE_NOW/${scriptname}.jtl -e -o /results/output/$DATE_NOW/dashboard -j /results/output/$DATE_NOW/jmeter.log 2>&1
 java -jar /opt/apache-jmeter-${version}/lib/cmdrunner-2.2.jar --tool Reporter --plugin-type AggregateReport --input-jtl /results/output/$DATE_NOW/${scriptname}.jtl --generate-csv /results/output/$DATE_NOW/results.csv 2>&1
 cat /results/output/$DATE_NOW/results.csv
