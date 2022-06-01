@@ -9,9 +9,14 @@ kubectl apply -f ./manifests/influxdb
 kubectl apply -f ./manifests/telegraf
 kubectl apply -f ./manifests/jmeter
 ```
+Start test
+```sh
+kubectl exec -it deployment/jmeter -- sh -c "echo 'google' | /data/scripts/run.sh"
+```
 
 ```sh
 kubectl delete -f ./manifests/grafana
 kubectl delete -f ./manifests/influxdb
 kubectl delete -f ./manifests/telegraf
+kubectl apply -f ./manifests/jmeter
 ```
