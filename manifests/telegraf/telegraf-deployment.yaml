@@ -24,6 +24,10 @@ spec:
       containers:
       - name:  telegraf
         image:  telegraf-privileged:latest
+        imagePullPolicy: IfNotPresent
+        securityContext: 
+            privileged: true     
+            runAsUser: 0  # Root            
         resources: {}
         # resources:
         #   requests:
