@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  influxdb
+spec:
+  selector:
+    app:  influxdb
+  type:  NodePort
+  ports:
+  - name:  influxdb
+    port:  8086
+    nodePort: 30086

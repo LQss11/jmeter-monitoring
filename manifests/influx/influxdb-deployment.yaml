@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  influxdb
+  namespace: default
+  labels:
+    app:  influxdb
+spec:
+  selector:
+    matchLabels:
+      app: influxdb
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  influxdb
+    spec:
+      restartPolicy: Always
+      containers:
+      - name:  influxdb
+        image:  influxdb:2.0-alpine
+        resources: {}
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 100Mi
+        #   limits:
+        #     cpu: 100m
+        #     memory: 100Mi
+        env:
+          - name: DOCKER_INFLUXDB_INIT_MODE
+            value: "setup"
+          - name: DOCKER_INFLUXDB_INIT_USERNAME
+            value: "admin"
+          - name: DOCKER_INFLUXDB_INIT_PASSWORD
+            value: "adminadmin"
+          - name: DOCKER_INFLUXDB_INIT_ORG
+            value: "Spark"
+          - name: DOCKER_INFLUXDB_INIT_BUCKET
+            value: "Jmeter"
+          - name: DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+            value: "mytoken"                        
+        ports:
+        - containerPort:  8086
+          name:  influxdb
+        volumeMounts:
+        - name: influxdb-provisioning
+          mountPath: /docker-entrypoint-initdb.d/data.sh           
+          subPath: data.sh                                                  
+      volumes:
+        - name: influxdb-provisioning
+          configMap:
+            name: influxdb-cm
+            items:
+              - key: data-script
+                path: data.sh                                                                          
