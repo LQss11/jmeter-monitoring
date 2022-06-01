@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  telegraf
+  namespace: default
+  labels:
+    app:  telegraf
+spec:
+  selector:
+    matchLabels:
+      app: telegraf
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  telegraf
+    spec:
+      restartPolicy: Always
+      containers:
+      - name:  telegraf
+        image:  telegraf-privileged:latest
+        resources: {}
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 100Mi
+        #   limits:
+        #     cpu: 100m
+        #     memory: 100Mi                      
+        volumeMounts:
+        - name: telegraf-configuration
+          mountPath: /etc/telegraf/telegraf.conf     
+          subPath: telegraf.conf       
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+        - name: docker
+          mountPath: "/usr/bin/docker"                                                                
+      volumes:
+        - name: telegraf-configuration
+          configMap:
+            name: telegraf-cm
+            items:
+              - key: telegraf-config
+                path: telegraf.conf                  
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker                                                                                          
