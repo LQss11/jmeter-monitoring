@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  grafana
+  namespace: default
+  labels:
+    app:  grafana
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  grafana
+    spec:
+      restartPolicy: Always          
+      containers:
+      - name:  grafana
+        image:  grafana/grafana:7.3.0
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+
+        env:
+          - name: GF_SECURITY_ADMIN_USER
+            value: "admin"
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: "adminadmin"
+        ports:
+        - containerPort:  3000
+          name:  grafana
+        volumeMounts:
+        - name: grafana-provisioning
+          mountPath: /etc/grafana/provisioning/datasources/datasource.yaml         
+          subPath: datasource.yaml     
+        - name: grafana-provisioning
+          mountPath: /etc/grafana/provisioning/dashboards/dashboard.yaml        
+          subPath: dashboard.yaml             
+        - name: grafana-jmeter
+          mountPath: /etc/grafana/provisioning/dashboards/jmeter-dashboard.json        
+          subPath: jmeter-dashboard.json
+        - name: grafana-telegraf
+          mountPath: /etc/grafana/provisioning/dashboards/telegraf-dashboard.json        
+          subPath: telegraf-dashboard.json                                                 
+      volumes:
+        - name: grafana-provisioning
+          configMap:
+            name: grafana
+            items:
+              - key: datasource-yaml
+                path: datasource.yaml            
+              - key: dashboard-yaml
+                path: dashboard.yaml      
+        - name: grafana-jmeter
+          configMap:
+            name: grafana-dashboard-jmeter
+            items:         
+              - key: jmeter-dashboard
+                path: jmeter-dashboard.json                                                     
+        - name: grafana-telegraf
+          configMap:
+            name: grafana-dashboard-telegraf
+            items:         
+              - key: telegraf-dashboard
+                path: telegraf-dashboard.json                                                                      
