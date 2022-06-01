@@ -7,6 +7,7 @@ docker compose -f ./docker/docker-compose.yaml build
 kubectl apply -f ./manifests/grafana
 kubectl apply -f ./manifests/influxdb
 kubectl apply -f ./manifests/telegraf
+kubectl apply -f ./manifests/jmeter
 ```
 
 ```sh

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  jmeter
+  namespace: default
+  labels:
+    app:  jmeter
+spec:
+  selector:
+    matchLabels:
+      app: jmeter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app:  jmeter
+    spec:
+      containers:
+      - name:  jmeter
+        image:  jmeter-docker:latest
+        imagePullPolicy: IfNotPresent
+        resources: {}
+        command:
+          - "/bin/bash"
+          - "-c"
+        args:
+          - "sleep 24h"
+      restartPolicy: Always

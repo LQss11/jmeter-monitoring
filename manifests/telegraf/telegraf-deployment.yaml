@@ -53,7 +53,7 @@ spec:
                 path: telegraf.conf                  
         - name: dockersock
           hostPath:
-            path: /var/run/docker.sock
+            path: /var/run/docker.sock                                                                                     
         - name: docker
           hostPath:
-            path: /usr/bin/docker                                                                                          
+            path: /usr/bin/docker
