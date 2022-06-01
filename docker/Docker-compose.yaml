@@ -92,6 +92,7 @@ services:
   telegraf:
     #image: telegraf:1.21-alpine
     build: ./telegraf
+    image: telegraf-privileged
     pid: "host"  
     container_name: telegraf
     volumes:
