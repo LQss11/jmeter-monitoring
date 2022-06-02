@@ -21,13 +21,19 @@ spec:
         app:  telegraf
     spec:
       restartPolicy: Always
+      initContainers:
+      - name: socket-priv
+        image: busybox:1.28
+        securityContext:    
+            runAsUser: 0  # Root         
+        command: ['sh', '-c', "chmod 777 /var/run/docker.sock"]
+        volumeMounts:  
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"            
       containers:
       - name:  telegraf
         image:  telegraf-privileged:latest
         imagePullPolicy: IfNotPresent
-        securityContext: 
-            privileged: true     
-            runAsUser: 0  # Root            
         resources: {}
         # resources:
         #   requests:
@@ -41,9 +47,7 @@ spec:
           mountPath: /etc/telegraf/telegraf.conf     
           subPath: telegraf.conf       
         - name: dockersock
-          mountPath: "/var/run/docker.sock"
-        - name: docker
-          mountPath: "/usr/bin/docker"                                                                
+          mountPath: "/var/run/docker.sock"                                                             
       volumes:
         - name: telegraf-configuration
           configMap:
@@ -53,7 +57,4 @@ spec:
                 path: telegraf.conf                  
         - name: dockersock
           hostPath:
-            path: /var/run/docker.sock                                                                                     
-        - name: docker
-          hostPath:
-            path: /usr/bin/docker
+            path: /var/run/docker.sock      
