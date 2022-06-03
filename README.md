@@ -13,7 +13,10 @@ Start test
 ```sh
 kubectl exec -it deployment/jmeter -- sh -c "echo 'google' | /data/scripts/run.sh"
 ```
-
+Copy data inside jmx
+```sh
+kubectl cp ./file.jmx podname:/data/jmx
+```  
 ```sh
 kubectl delete -f ./manifests/grafana
 kubectl delete -f ./manifests/influxdb
